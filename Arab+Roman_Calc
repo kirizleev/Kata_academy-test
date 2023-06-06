@@ -4,47 +4,59 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
-        System.out.println("Введите символы для вычисления арифметического выражения через пробел (римские или арабские целые числа от 1 до 10");
+        System.out.println("Введите символы для вычисления арифметического выражения через пробел (римские или арабские целые числа от 1 до 10)");
         String calcInput = in.nextLine();
         in.close();
-        String[] inputArr = calcInput.split(" ");
+        System.out.println(calc(calcInput));
+    }
+
+    public static String calc(String userInput) throws Exception {
+        int intA, intB;
+        boolean isArabic = true;
+        int intResult;
+        String result;
+
+        String[] inputArr = userInput.split(" ");
+        if (inputArr.length > 3){
+            throw new Exception("Количество введённых операндов превышает допустимое значение - 2");
+        }
 
         String a = inputArr[0];
         String sign = inputArr[1];
         String b = inputArr[2];
 
         try {
-            int intA = Integer.parseInt(a);
-            int intB = Integer.parseInt(b);
-            calc(intA, intB, sign, true);
+            intA = Integer.parseInt(a);
+            intB = Integer.parseInt(b);
         }catch(Exception e){
-            int intA = romanToNumber(a);
-            int intB = romanToNumber(b);
-            calc(intA, intB, sign, false);
+            intA = romanToNumber(a);
+            intB = romanToNumber(b);
+            isArabic = false;
         }
-    }
 
-    public static void calc(int int1, int int2, String sign, boolean isArabic) throws Exception {
-        int result;
-        if ((int1 < 1 || int1 > 10) || (int2 < 1 || int2 > 10)){
+        if ((intA < 1 || intA > 10) || (intB < 1 || intB > 10)){
             throw new Exception("Введены некорректные данные");
         }
 
         switch (sign) {
-            case "+" -> result = int1 + int2;
-            case "-" -> result = int1 - int2;
-            case "*" -> result = int1 * int2;
-            case "/" -> result = int1 / int2;
+            case "+" -> intResult = intA + intB;
+            case "-" -> intResult = intA - intB;
+            case "*" -> intResult = intA * intB;
+            case "/" -> intResult = intA / intB;
             default -> throw new Exception("Введён некорректный знак арифимитического выражения");
         }
-        if(isArabic){
-            System.out.println("Результат введённого арифмитического выражения: "+ result);
-        }else{
-            if(result < 1){
-                throw new Exception("Римские числа всегда больше нуля");
+
+        if(!isArabic){
+            if (intResult < 1){
+                throw new Exception("Римские числа не могут быть меньше единицы");
+            }else {
+                result = "Ответ на Ваше арифметическое выражение: " + convertNumToRoman(intResult);
             }
-            System.out.println("Результат введённого арифмитического выражения: "+ convertNumToRoman(result));
+        }else{
+            result = "Ответ на Ваше арифметическое выражение: " + intResult;
         }
+
+        return result;
     }
 
     public static String convertNumToRoman (int numArabian) {
